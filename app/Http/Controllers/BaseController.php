@@ -22,14 +22,14 @@ class BaseController extends Controller
         return response()->json($response, $code);
     }
 
-    public function sendError($error): JsonResponse
+    public function sendError($error, $code = 400): JsonResponse
     {
         $response = [
             'success' => false,
-            'status_code' => 400,
+            'status_code' => $code,
             'message' => $error,
         ];
 
-        return response()->json($response, 400);
+        return response()->json($response, $code);
     }
 }

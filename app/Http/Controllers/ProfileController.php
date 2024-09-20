@@ -14,4 +14,12 @@ class ProfileController extends BaseController
         return $this->sendResponse(ProfileResource::collection(Profile::all()), 'Profile retrieved successfully');
     }
 
+    public function show($id): JsonResponse
+    {
+        $profile = Profile::find($id);
+        if (is_null($profile)) {
+            return $this->sendError('Profile not found.', 404);
+        }
+        return $this->sendResponse(new ProfileResource($profile), 'Profile retrieved successfully');
+    }
 }
