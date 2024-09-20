@@ -12,7 +12,7 @@ class ProfileController extends BaseController
 {
     public function index(): JsonResponse
     {
-        return $this->sendResponse(ProfileResource::collection(Profile::all()), 'Profile retrieved successfully');
+        return $this->sendResponse(ProfileResource::collection(Profile::all()->whereNull('deleted_at')), 'Profile retrieved successfully');
     }
 
     public function show($id): JsonResponse
