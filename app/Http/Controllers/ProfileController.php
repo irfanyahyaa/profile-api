@@ -18,9 +18,11 @@ class ProfileController extends BaseController
     public function show($id): JsonResponse
     {
         $profile = Profile::find($id);
+
         if (is_null($profile)) {
             return $this->sendError('Profile not found.', 404);
         }
+
         return $this->sendResponse(new ProfileResource($profile), 'Profile retrieved successfully');
     }
 
@@ -37,7 +39,11 @@ class ProfileController extends BaseController
             return $this->sendError('Validation Error.', 422);
         }
 
-        $profile = Profile::all()->findOrFail($id);
+        $profile = Profile::find($id);
+
+        if (is_null($profile)) {
+            return $this->sendError('Profile not found.', 404);
+        }
 
         $profile->update([
             'full_name' => $request->full_name,
