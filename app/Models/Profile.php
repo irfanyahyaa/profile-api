@@ -16,6 +16,7 @@ class Profile extends Model
         'address',
         'gender',
         'marital_status',
+        'user_id',
     ];
 
     public function user(): BelongsTo
