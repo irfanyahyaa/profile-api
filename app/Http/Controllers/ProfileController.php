@@ -6,22 +6,25 @@ use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends BaseController
 {
-//    public function __construct(){
-//        $this->unauthenticated();
-//    }
-
     public function index(): JsonResponse
     {
-        return $this->sendResponse(ProfileResource::collection(Profile::all()->whereNull('deleted_at')), 'Profile retrieved successfully');
+        $profiles = Cache::remember('profiles', now()->addMinutes(10), function () {
+            return Profile::all()->whereNull('deleted_at');
+        });
+
+        return $this->sendResponse(ProfileResource::collection($profiles), 'Profile retrieved successfully');
     }
 
     public function show($id): JsonResponse
     {
-        $profile = Profile::find($id);
+        $profile = Cache::remember("profile:{$id}", now()->addMinutes(10), function () use ($id) {
+            return Profile::find($id);
+        });
 
         if (is_null($profile)) {
             return $this->sendError('Profile not found.', 404);
@@ -49,6 +52,10 @@ class ProfileController extends BaseController
             return $this->sendError('Profile not found.', 404);
         }
 
+        if ($profile->user_id !== auth()->id()) {
+            return $this->sendError('Unauthorized to update this profile.', 403);
+        }
+
         $profile->update([
             'full_name' => $request->full_name,
             'address' => $request->address,
@@ -72,7 +79,7 @@ class ProfileController extends BaseController
         return $this->sendResponse(new ProfileResource($profile), 'Profile deleted successfully');
     }
 
-    public function unauthenticated()
+    public function unauthenticated(): JsonResponse
     {
         return $this->sendError('Unauthenticated', 401);
     }

@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', LoginController::class);
 Route::post('/register', RegisterController::class);
 Route::post('/logout', LogoutController::class);
-Route::get( '/unauthenticated', [ProfileController::class, 'unauthenticated'])->name('login');
+Route::get('/unauthenticated', [ProfileController::class, 'unauthenticated'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('/profile', ProfileController::class);
