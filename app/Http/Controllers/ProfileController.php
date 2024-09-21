@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends BaseController
 {
+//    public function __construct(){
+//        $this->unauthenticated();
+//    }
+
     public function index(): JsonResponse
     {
         return $this->sendResponse(ProfileResource::collection(Profile::all()->whereNull('deleted_at')), 'Profile retrieved successfully');
@@ -66,5 +70,10 @@ class ProfileController extends BaseController
         $profile->delete();
 
         return $this->sendResponse(new ProfileResource($profile), 'Profile deleted successfully');
+    }
+
+    public function unauthenticated()
+    {
+        return $this->sendError('Unauthenticated', 401);
     }
 }
