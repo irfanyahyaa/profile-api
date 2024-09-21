@@ -54,4 +54,17 @@ class ProfileController extends BaseController
 
         return $this->sendResponse(new ProfileResource($profile), 'Profile updated successfully');
     }
+
+    public function destroy($id): JsonResponse
+    {
+        $profile = Profile::find($id);
+
+        if (is_null($profile)) {
+            return $this->sendError('Profile not found.', 404);
+        }
+
+        $profile->delete();
+
+        return $this->sendResponse(new ProfileResource($profile), 'Profile deleted successfully');
+    }
 }
