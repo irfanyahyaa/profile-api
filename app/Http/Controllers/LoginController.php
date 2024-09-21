@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends BaseController
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
